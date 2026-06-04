@@ -32,7 +32,7 @@ const aboutPages = [
 // 2. LIFECYCLE (PRELOAD & SETUP)
 // ==========================================
 function preload() {
-  imgLaposky = loadImage("assets/Immagine6.jpeg", () => imgLoaded = true, () => console.warn("Immagine non trovata."));
+  imgLaposky = loadImage("Immagine6.jpeg", () => imgLoaded = true, () => console.warn("Immagine non trovata."));
 }
 
 function setup() {
