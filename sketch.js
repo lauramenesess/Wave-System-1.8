@@ -277,12 +277,16 @@ function keyPressed() {
     if (keyCode === RIGHT_ARROW) moveSelection(1);
     else if (keyCode === LEFT_ARROW) moveSelection(-1);
     else if (keyCode === ENTER && selectedArchiveIndex >= 0) {
-      visualStack = [...archiveItems[selectedArchiveIndex].stack]; state = "GENERATIVE";
-      systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length; bootTimer = 0; centerInput();
+      visualStack = [...archiveItems[selectedArchiveIndex].stack]; 
+      state = "INPUT"; // CORRETTO: Imposta lo stato su INPUT invece di GENERATIVE per mantenere attivo il terminale
+      systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length + "\n>  READY FOR MOLECULAR SYNTAX OVERLAY..."; 
+      bootTimer = 0; 
+      centerInput();
+      inputField.value("");
+      inputField.elt.focus(); // Forza il focus sul campo di testo per scrivere subito
     }
   }
 }
-
 // ==========================================
 // 6. DRAW LOOP ED INTERFACCE TERMINALE
 // ==========================================
