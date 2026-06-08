@@ -276,7 +276,7 @@ function keyPressed() {
   if (!isTyping) {
     if (keyCode === RIGHT_ARROW) moveSelection(1);
     else if (keyCode === LEFT_ARROW) moveSelection(-1);
-    else if (keyCode === ENTER && selectedArchiveIndex >= 0) {
+    else if (keyCode === DOWN_ARROW && selectedArchiveIndex >= 0) {
       visualStack = [...archiveItems[selectedArchiveIndex].stack]; state = "GENERATIVE";
       systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length; bootTimer = 0; centerInput();
     }
