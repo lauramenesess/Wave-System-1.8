@@ -63,20 +63,23 @@ function setup() {
   createSpan("> ").style("font-family", "'VT323', monospace").style("font-size", "20px").style("color", "#00ff41").style("margin-right", "8px").style("user-select", "none").parent(inputWrapper);
   inputField = createInput("").addClass("input-style").attribute("maxlength", "50").parent(inputWrapper);
   centerInput();
+  
 inputField.elt.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === "z") { e.preventDefault(); triggerUNDO(); return; }
   
   if (e.key === "Enter") {
     e.preventDefault();
-  
     if (selectedArchiveIndex >= 0) {
       visualStack = [...archiveItems[selectedArchiveIndex].stack]; 
       state = "GENERATIVE";
       systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length; 
       bootTimer = 0; centerInput();
       inputField.value(""); 
+      
+      archiveItems[selectedArchiveIndex].element.removeClass("selected-item");
+      selectedArchiveIndex = -1; 
+      
     } else {
-
       processText();
     }
   }
@@ -86,8 +89,7 @@ inputField.elt.addEventListener("keydown", (e) => {
     if (archiveItems.length > 0) moveSelection(1); 
   }
 });
-}
-
+  
 // ==========================================
 // 3. MOTORE AUDIO SINTETICO
 // ==========================================
