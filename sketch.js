@@ -195,7 +195,7 @@ function processText() {
 
     if (nounCount > 0) {
       if (nounCount % 2 === 0) newLayer.isParticles = true;
-      else newLayer.extraThickness += nounCount * 0.4; // Ridotto l'incremento di spessore basato sui sostantivi
+      else newLayer.extraThickness += nounCount * 0.4; 
     }
 
     let shortText = val.length > 40 ? val.substring(0, 37).toUpperCase() + "..." : val.toUpperCase();
@@ -221,7 +221,7 @@ function saveToArchive() {
 function moveSelection(direction) {
   if (archiveItems.length === 0) return;
   if (selectedArchiveIndex >= 0) archiveItems[selectedArchiveIndex].element.removeClass("selected-item");
-  selectedArchiveIndex = selectedArchiveIndex === -1 && direction === -1 ? archiveItems.length - 1 : (selectedArchiveIndex + direction + archiveItems.length) % archiveItems.length;
+  selectedArchiveIndex = -1 === selectedArchiveIndex && -1 === direction ? archiveItems.length - 1 : (selectedArchiveIndex + direction + archiveItems.length) % archiveItems.length;
   archiveItems[selectedArchiveIndex].element.addClass("selected-item");
 }
 
@@ -278,15 +278,19 @@ function keyPressed() {
     else if (keyCode === LEFT_ARROW) moveSelection(-1);
     else if (keyCode === ENTER && selectedArchiveIndex >= 0) {
       visualStack = [...archiveItems[selectedArchiveIndex].stack]; 
-      state = "INPUT"; // CORRETTO: Imposta lo stato su INPUT invece di GENERATIVE per mantenere attivo il terminale
+      state = "INPUT"; 
       systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length + "\n>  READY FOR MOLECULAR SYNTAX OVERLAY..."; 
       bootTimer = 0; 
+      
+      if (wrapper) wrapper.show();
       centerInput();
+      
       inputField.value("");
-      inputField.elt.focus(); // Forza il focus sul campo di testo per scrivere subito
+      inputField.elt.focus();
     }
   }
 }
+
 // ==========================================
 // 6. DRAW LOOP ED INTERFACCE TERMINALE
 // ==========================================
@@ -308,7 +312,7 @@ function draw() {
   if (!isFullscreen) {
     drawInterface();
     if (wrapper && ["INPUT", "GENERATIVE", "CONFIRM_EXIT"].includes(state)) {
-      wrapper.show(); if (document.activeElement !== inputField.elt) inputField.elt.focus();
+      wrapper.show(); 
     }
   }
 
@@ -408,6 +412,9 @@ function drawTour() {
   }
 }
 
+// ==========================================
+// 7. ENGINE DI RENDERING GRAFICO
+// ==========================================
 function drawSkipBoot() {
   let progress = min(1, skipTimer / SKIP_DURATION);
   drawUnifiedProgressBar(progress, false, ">  BYPASS DETECTED: CONNECTING INTERACTIVE FLOW...");
@@ -434,13 +441,9 @@ function drawInterface() {
   if (width >= 600 && showPlaceholderLabel) { textSize(18); fill(0, 255, 65, 160); text(">  " + currentPlaceholder, 35, labelY); }
 }
 
-// ==========================================
-// 7. ENGINE DI RENDERING GRAFICO
-// ==========================================
 function renderLayer(layerData, globalNeonActive) {
   noFill();
   
-  // MODIFICATO: Ricalibrati i pesi per rendere i punti e le linee elegantemente filiformi
   let baseWeight = layerData.isPlaceholder ? 0.6 : map(layerData.energy, 1, 50, 0.4, 1.5);
   let finalWeight = Math.pow(baseWeight, 2) * 0.35 + layerData.extraThickness;
   if (layerData.neonParamActive) finalWeight += 0.4;
@@ -469,7 +472,6 @@ function renderLayer(layerData, globalNeonActive) {
       let r = map(n, 0, 1, isP ? 50 : 40, layerData.energy * 7) + sin(j * layerData.complexity + frameCount * 0.05) * 12;
       let cx = r * cos(j * TWO_PI), cy = r * sin(j * TWO_PI * (layerData.verbs + 1));
 
-      // MODIFICATO: Anche la dimensione del punto (particella) si adatta condizionalmente per essere più sottile
       if (isP) { strokeWeight(finalWeight * 1.8); point(cx, cy); } 
       else {
         if (prevX !== null && floor(j * 100) % 2 === 0) line(prevX, prevY, cx, cy);
