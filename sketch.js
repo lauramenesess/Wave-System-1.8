@@ -63,13 +63,29 @@ function setup() {
   createSpan("> ").style("font-family", "'VT323', monospace").style("font-size", "20px").style("color", "#00ff41").style("margin-right", "8px").style("user-select", "none").parent(inputWrapper);
   inputField = createInput("").addClass("input-style").attribute("maxlength", "50").parent(inputWrapper);
   centerInput();
+inputField.elt.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "z") { e.preventDefault(); triggerUNDO(); return; }
+  
+  if (e.key === "Enter") {
+    e.preventDefault();
+  
+    if (selectedArchiveIndex >= 0) {
+      visualStack = [...archiveItems[selectedArchiveIndex].stack]; 
+      state = "GENERATIVE";
+      systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length; 
+      bootTimer = 0; centerInput();
+      inputField.value(""); 
+    } else {
 
-  inputField.elt.addEventListener("keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "z") { e.preventDefault(); triggerUNDO(); return; }
-    if (e.key === "Enter") processText();
-    if (e.key === "Tab") { e.preventDefault(); if (archiveItems.length > 0) moveSelection(1); }
-  });
-  inputField.elt.focus();
+      processText();
+    }
+  }
+  
+  if (e.key === "Tab") { 
+    e.preventDefault(); 
+    if (archiveItems.length > 0) moveSelection(1); 
+  }
+});
 }
 
 // ==========================================
@@ -276,7 +292,7 @@ function keyPressed() {
   if (!isTyping) {
     if (keyCode === RIGHT_ARROW) moveSelection(1);
     else if (keyCode === LEFT_ARROW) moveSelection(-1);
-    else if (keyCode === DOWN_ARROW && selectedArchiveIndex >= 0) {
+    else if (keyCode === ENTER && selectedArchiveIndex >= 0) {
       visualStack = [...archiveItems[selectedArchiveIndex].stack]; state = "GENERATIVE";
       systemLog = ">  RESTORING COMPLEX STACK FROM STORAGE CLUSTER\n>  LOADED LAYER COUNT: " + visualStack.length; bootTimer = 0; centerInput();
     }
